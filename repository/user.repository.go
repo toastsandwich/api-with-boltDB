@@ -57,3 +57,23 @@ func (r *UserRepository) Get(key []byte) ([]byte, error) {
 	})
 	return value, err
 }
+
+func (r *UserRepository) GetAll() (map[string][]byte, error) {
+	var data = make(map[string][]byte)
+	err := r.DB.View(func(tx *bolt.Tx) error {
+		bkt := tx.Bucket(r.bucketName)
+		if bkt == nil {
+			return fmt.Errorf("bucket not found: %s", r.bucketName)
+		}
+		err := bkt.ForEach(func(k, v []byte) error {
+			email := string(k)
+			data[email] = v
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	return data, err
+}
