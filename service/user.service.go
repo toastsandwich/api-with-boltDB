@@ -51,3 +51,20 @@ func (s *UserService) GetUserService(email string) (*model.User, error) {
 	}
 	return u, nil
 }
+
+func (s *UserService) GetAllUserService() (map[string]model.User, error) {
+	m := make(map[string]model.User)
+	data, err := s.UserRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range data {
+		u := model.User{}
+		err := json.Unmarshal(v, &u)
+		if err != nil {
+			return nil, err
+		}
+		m[k] = u
+	}
+	return m, nil
+}
