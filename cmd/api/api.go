@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/boltdb/bolt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/toastsandwich/restraunt-api-system/handler"
 )
 
@@ -35,10 +37,19 @@ func (a *APIServer) Run() error {
 	return server.ListenAndServe()
 }
 
-func (a *APIServer) routes() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /user/get", a.userHandler.GetUser)
-	mux.HandleFunc("GET /user/getall", a.userHandler.GetAllUsers)
-	mux.HandleFunc("POST /user/create", a.userHandler.CreateUser)
-	return mux
+func (a *APIServer) routes() *chi.Mux {
+	router := chi.NewRouter()
+
+	// use necessary middleware
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.Logger)
+
+	router.Route("/user", func(r chi.Router) {
+		r.Get("/get", a.userHandler.GetUser)
+		r.Get("/getall", a.userHandler.GetAllUsers)
+		r.Post("/create", a.userHandler.CreateUser)
+		r.Delete("/delete", a.userHandler.DeleteUser)
+	})
+
+	return router
 }
