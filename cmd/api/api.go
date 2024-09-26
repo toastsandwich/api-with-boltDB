@@ -38,6 +38,7 @@ func (a *APIServer) Run() error {
 func (a *APIServer) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /user/get", a.userHandler.GetUser)
+	mux.HandleFunc("GET /user/getall", a.userHandler.GetAllUsers)
 	mux.HandleFunc("POST /user/create", a.userHandler.CreateUser)
 	return mux
 }
