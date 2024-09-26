@@ -77,3 +77,18 @@ func (r *UserRepository) GetAll() (map[string][]byte, error) {
 	})
 	return data, err
 }
+
+func (r *UserRepository) DeleteUser(email []byte) error {
+	return r.DB.Update(func(tx *bolt.Tx) error {
+		bkt := tx.Bucket(r.bucketName)
+		if bkt == nil {
+			return fmt.Errorf("bucket not found: %s", r.bucketName)
+		}
+		
+		err := bkt.Delete(email)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+}
