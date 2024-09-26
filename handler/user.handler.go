@@ -66,3 +66,11 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
+
+func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	w.Header().Set("Content-Type", "application/json")
+	if err := h.UserService.DeleteUserService(email); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
