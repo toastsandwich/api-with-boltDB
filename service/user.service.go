@@ -68,3 +68,8 @@ func (s *UserService) GetAllUserService() (map[string]model.User, error) {
 	}
 	return m, nil
 }
+
+func (s *UserService) DeleteUserService(email string) error {
+	email_buf := []byte(email)
+	return s.UserRepository.DeleteUser(email_buf)
+}
